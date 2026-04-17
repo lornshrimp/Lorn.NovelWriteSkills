@@ -17,6 +17,7 @@ argument-hint: '给我 OUTLINE_FILE 与 CHAPTER_FILE；若是多章，可给 CHA
 - `references/章节批量模式与连续性日志.md`
 - `references/章节终审门槛与摘要规范.md`
 - `references/单元主线编排与节奏配比.md`
+- `references/九部件与进度节奏续跑卡.md`
 
 ## 何时使用
 
@@ -45,6 +46,7 @@ argument-hint: '给我 OUTLINE_FILE 与 CHAPTER_FILE；若是多章，可给 CHA
 - 统一承接“存在文件不等于步骤已执行”的校验口径。
 - 统一承接逐章摘要与批量摘要模板。
 - 统一承接步骤 0 初始化、工件命名、未分类兜底与连续性台账默认位置。
+- 当章节创作出现卡顿、续跑失焦或返工过大时，先回到九部件与进度节奏层重建顺序，再继续正文链路，而不是盲目硬写。
 
 ## 工件命名规则（强制）
 
