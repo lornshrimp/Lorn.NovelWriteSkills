@@ -1,7 +1,7 @@
 ---
 name: 都市悬疑-输出WebNovel版
 description: '用于【都市悬疑】题材下的 WebNovel 平台输出任务。作为题材包装层、兼容入口与路由层，负责保留都市悬疑入口、补充调查逻辑与跨文化可读边界，并明确要求加载并使用 `通用-输出WebNovel版`。关键词：都市悬疑WebNovel版、跨文化悬疑、英文连载。'
-argument-hint: '例如：把都市悬疑某章改成更适合 WebNovel 的英文版本，并保留推理链与压迫感。'
+argument-hint: '要把哪一章都市悬疑改成 WebNovel 版？默认按“保推理链、压迫感与跨文化可读性”处理。'
 ---
 
 # 都市悬疑-输出WebNovel版
@@ -24,6 +24,13 @@ argument-hint: '例如：把都市悬疑某章改成更适合 WebNovel 的英文
 - `references/执行细则与题材补丁.md`
 - `references/分节级补救映射与详细规则回填.md`
 - `references/平台研究补充.md`
+
+## 常见触发词 / 用户说法速查
+
+- 输出都市悬疑 WebNovel 版
+- 这章改成 WebNovel 英文平台风格
+- 保推理链但更跨文化可读
+- 都市悬疑怎么写得更像 WebNovel
 
 ## 命中本技能时的工作重心
 
