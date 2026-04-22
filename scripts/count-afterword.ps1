@@ -1,17 +1,20 @@
 <#
 .SYNOPSIS
-Count the length of the "afterword" section (text after a marker such as "## 作者有话说") in one or more Markdown files.
+Count the length of the "afterword" section (starting at a marker such as "## 作者有话说") in one or more Markdown files.
 
 .DESCRIPTION
-- Treats everything after the marker as "作者有话说" content.
+- Treats content from the marker to the next level-2 heading (if any) as "作者有话说" content.
 - Reports total character length and CJK (Unified Ideographs) count.
-- Intended for validating platform constraints like "作者有话说 ≤ 300 字".
+- Intended for validating platform constraints like "作者有话说 200–300 字".
 
 .PARAMETER Path
 One or more file paths. Supports pipeline input.
 
 .PARAMETER Marker
 Marker string that separates正文 and afterword. Default: "## 作者有话说".
+
+.PARAMETER MinCJK
+Minimum required CJK character count. Default: 200.
 
 .PARAMETER MaxCJK
 Maximum allowed CJK character count. Default: 300.
@@ -41,6 +44,9 @@ param(
   [string]$Marker,
 
   [Parameter()]
+  [int]$MinCJK = 200,
+
+  [Parameter()]
   [int]$MaxCJK = 300,
 
   [Parameter()]
@@ -58,6 +64,31 @@ begin {
   }
 
   $cjkRegex = [regex]'\p{IsCJKUnifiedIdeographs}'
+
+  function Get-AfterwordSection {
+    param(
+      [Parameter(Mandatory = $true)]
+      [string]$Text,
+
+      [Parameter(Mandatory = $true)]
+      [string]$SectionMarker
+    )
+
+    $idx = $Text.IndexOf($SectionMarker, [System.StringComparison]::Ordinal)
+    if ($idx -lt 0) {
+      return ,@($false, '')
+    }
+
+    $after = $Text.Substring($idx + $SectionMarker.Length)
+    $after = ($after -replace '^\s+', '')
+
+    $nextSection = [regex]::Match($after, '(?m)^##\s+')
+    if ($nextSection.Success) {
+      $after = $after.Substring(0, $nextSection.Index).TrimEnd()
+    }
+
+    return ,@($true, $after)
+  }
 }
 
 process {
@@ -72,8 +103,12 @@ process {
         HasAfterword= $false
         AfterwordLen= 0
         AfterwordCJK= 0
+        MinCJK      = $MinCJK
         MaxCJK      = $MaxCJK
+        MeetsMinCJK = $false
         MeetsMaxCJK = $false
+        MeetsRange  = $false
+        MeetsAll    = $false
       }
       continue
     }
@@ -83,26 +118,32 @@ process {
       $encObj = [System.Text.Encoding]::$Encoding
       $raw = [System.IO.File]::ReadAllText((Resolve-Path -LiteralPath $resolved).Path, $encObj)
     }
-    $idx = $raw.IndexOf($Marker, [System.StringComparison]::Ordinal)
+    $section = Get-AfterwordSection -Text $raw -SectionMarker $Marker
+    $hasAfterword = [bool]$section[0]
+    $after = [string]$section[1]
 
-    if ($idx -lt 0) {
+    if (-not $hasAfterword) {
       [pscustomobject]@{
         Path        = $p
         Exists      = $true
         HasAfterword= $false
         AfterwordLen= 0
         AfterwordCJK= 0
+        MinCJK      = $MinCJK
         MaxCJK      = $MaxCJK
+        MeetsMinCJK = $false
         MeetsMaxCJK = $false
+        MeetsRange  = $false
+        MeetsAll    = $false
       }
       continue
     }
 
-    $after = $raw.Substring($idx + $Marker.Length)
-    $after = ($after -replace '^\s+', '')
-
     $afterLen = $after.Length
     $afterCjk = $cjkRegex.Matches($after).Count
+    $meetsMin = ($afterCjk -ge $MinCJK)
+    $meetsMax = ($afterCjk -le $MaxCJK)
+    $meetsRange = ($meetsMin -and $meetsMax)
 
     [pscustomobject]@{
       Path        = $p
@@ -110,8 +151,12 @@ process {
       HasAfterword= $true
       AfterwordLen= $afterLen
       AfterwordCJK= $afterCjk
+      MinCJK      = $MinCJK
       MaxCJK      = $MaxCJK
-      MeetsMaxCJK = ($afterCjk -le $MaxCJK)
+      MeetsMinCJK = $meetsMin
+      MeetsMaxCJK = $meetsMax
+      MeetsRange  = $meetsRange
+      MeetsAll    = $meetsRange
     }
   }
 }

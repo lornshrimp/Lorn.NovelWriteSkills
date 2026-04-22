@@ -65,6 +65,7 @@ argument-hint: '要把哪一章输出为 WebNovel 版？默认按“保留核心
 - 平台派生正文默认落在本 Skill 的工作目录 `WebNovel/` 下。
 - 章节级派生正文目录统一按小说结构决定：若作品有分部，则位于 `WebNovel/第X部/第Y卷/`；若作品无分部，则位于 `WebNovel/第X卷/`。
 - 平台派生正文文件名默认不带日期，沿用既有章节号与平台标题同步规则；日期只用于配套审阅报告、书评等派生产物。
+- 平台稿落盘后必须显式运行字数门禁脚本：正文至少用 `scripts/platform_validate.ps1` 以 `minLen=6500, requireAfterword=true, minAfterwordWords=100, maxAfterwordWords=150` 校验整稿；若只单独核 `## 作者有话说`，再用 `scripts/count-afterword-words.ps1 -MinWords 100 -MaxWords 150`；除 `## 作者有话说` 标记行外，还必须用 `scripts/check_no_cjk_except_marker.ps1` 校验零中文 / CJK。
 - 在无损迁移完成前，不得删除源 `输出WebNovel版.prompt.md` 中尚未完成映射的内容。
 
 ## 与其他 Skill / Prompt 的边界

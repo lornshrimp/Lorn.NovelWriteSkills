@@ -1,6 +1,6 @@
 <#!
 .SYNOPSIS
-Count words in the afterword section (text after a marker such as "## 作者有话说").
+Count words in the afterword section (starting at a marker such as "## 作者有话说").
 #>
 
 [CmdletBinding()]
@@ -29,6 +29,31 @@ begin {
   }
 
   $wordRegex = [regex]"[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*"
+
+  function Get-AfterwordSection {
+    param(
+      [Parameter(Mandatory = $true)]
+      [string]$Text,
+
+      [Parameter(Mandatory = $true)]
+      [string]$SectionMarker
+    )
+
+    $idx = $Text.IndexOf($SectionMarker, [System.StringComparison]::Ordinal)
+    if ($idx -lt 0) {
+      return ,@($false, '')
+    }
+
+    $after = $Text.Substring($idx + $SectionMarker.Length)
+    $after = ($after -replace '^\s+', '')
+
+    $nextSection = [regex]::Match($after, '(?m)^##\s+')
+    if ($nextSection.Success) {
+      $after = $after.Substring(0, $nextSection.Index).TrimEnd()
+    }
+
+    return ,@($true, $after)
+  }
 }
 
 process {
@@ -48,9 +73,11 @@ process {
     }
 
     $raw = Get-Content -LiteralPath $p -Raw -Encoding $Encoding
-    $idx = $raw.IndexOf($Marker, [System.StringComparison]::Ordinal)
+    $section = Get-AfterwordSection -Text $raw -SectionMarker $Marker
+    $hasAfterword = [bool]$section[0]
+    $after = [string]$section[1]
 
-    if ($idx -lt 0) {
+    if (-not $hasAfterword) {
       [pscustomobject]@{
         Path         = $p
         Exists       = $true
@@ -63,9 +90,6 @@ process {
       }
       continue
     }
-
-    $after = $raw.Substring($idx + $Marker.Length)
-    $after = ($after -replace '^\s+', '')
 
     $count = $wordRegex.Matches($after).Count
     $meets = ($count -ge $MinWords -and $count -le $MaxWords)

@@ -117,6 +117,10 @@ function Split-BodyAfterword {
     $body = $Text.Substring(0, $idx)
     $after = $Text.Substring($idx + $Marker.Length)
     $after = ($after -replace '^\s+', '')
+    $nextSection = [regex]::Match($after, '(?m)^##\s+')
+    if ($nextSection.Success) {
+      $after = $after.Substring(0, $nextSection.Index).TrimEnd()
+    }
     return ,@($body, $after, $true)
   }
 

@@ -81,7 +81,7 @@ argument-hint: '给我 OUTLINE_FILE 与 CHAPTER_FILE；若是多章，可给 CHA
 ## 硬规则
 
 - 只有当正文、终审报告、阅读笔记、分章书评、日志状态全部闭环时，才允许宣称完成。
-- 任一章节正文在步骤 2 之后发生改动，都必须重跑字数与受影响审阅链。
+- 任一章节正文在步骤 2 之后发生改动，都必须重跑字数与受影响审阅链：正文用 `scripts/count-chapter.ps1 -MinCJK 3500 -MaxCJK 6500`；若同文件含 `## 作者有话说`，再用 `scripts/count-afterword.ps1 -MinCJK 200 -MaxCJK 300` 复检该小节；不得只凭旧报告或目测放行。
 - 步骤 3 / 4 / 5 / 6 / 7 / 8 / 9 不得因为“已有文件”或“分数看起来不错”被跳过。
 - `9.2+` 的唯一判定，以最新终审报告中的综合评分为准。
 - 命中本 Skill 时，必须坚持执行器身份，除硬性缺参外，不得把阶段汇报伪装成完成汇报。
@@ -98,5 +98,6 @@ argument-hint: '给我 OUTLINE_FILE 与 CHAPTER_FILE；若是多章，可给 CHA
 - 是否已读取全部必读 references
 - 是否已对每章维护日志与一致性状态
 - 是否已在日志或终审结论中记录本章卖点落地度与遗忘风险
+- 是否已在本轮最终稿上重跑 `scripts/count-chapter.ps1 -MinCJK 3500 -MaxCJK 6500`，并在有 `## 作者有话说` 时同步重跑 `scripts/count-afterword.ps1 -MinCJK 200 -MaxCJK 300`
 - 是否已完成步骤 10 的读者产物与步骤 11 的分章书评
 - 是否已按模板输出步骤 12 摘要
