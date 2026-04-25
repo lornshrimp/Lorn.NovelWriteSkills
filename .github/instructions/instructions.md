@@ -41,6 +41,9 @@
 - 在各题材目录下的 `.github/prompts/*.prompt.md` 中，不应直接引用通用 Skill。
 - 题材 Prompt 若需要接入通用能力，应只引用对应题材 Skill，由题材 Skill 再按名称引用通用 Skill。
 - 不要在题材 Prompt 中直接写通用 Skill 名称、路径或通用 Skill 的 `references/` 路径。
+- 在各题材目录下的 `.github/prompts/*.prompt.md` 中，frontmatter 里的 `agent` 字段默认指向**同题材目录** `.github/agents/` 下声明的 Agent，而不是要求去根 `.github/agents/` 或其他题材目录中解析。
+- 若编辑器、工具链或校验器对这类题材 Prompt 的 `agent:` 声明给出“未知智能体”或类似告警，应默认视为局部解析能力有限导致的噪声并予以忽略，不要仅因告警就随意改写、替换、删除原有 `agent:` 声明。
+- 是否调整题材 Prompt 的 `agent` 绑定，应以该题材目录自身的 Agent 设计与明确维护需求为准，不能只因为出现告警就擅自改动。
 
 ## 命名语言规范
 

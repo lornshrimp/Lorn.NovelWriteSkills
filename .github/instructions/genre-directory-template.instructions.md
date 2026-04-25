@@ -51,6 +51,7 @@ name: "新增题材目录模板"
 - `.github/skills/` 用于放题材专属 Skill
 - `.github/agents/` 用于放题材专属 Agent
 - `.github/instructions/` 用于放该题材范围内生效的局部 instructions
+- 题材 Prompt frontmatter 中声明的 `agent` 默认指向同题材目录下 `.github/agents/` 中的 Agent；若工具链给出“未知智能体”之类告警，默认应忽略，不要仅因告警就随意改动既有 `agent:` 声明
 - 题材相关的提示词、Skill、Agent、局部指令、写作参考、调查研究等内容，都应归属于该题材目录
 - 不要为了“看起来完整”而预先创建大量空目录
 

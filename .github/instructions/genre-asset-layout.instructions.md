@@ -63,6 +63,8 @@ name: "题材目录内部资产布局规范"
 - 题材目录下的 Prompt 应优先作为**题材任务入口、薄编排层、兼容入口**使用。
 - 若某项能力已经存在对应的题材 Skill 与通用 Skill 双层结构，则题材 Prompt **不应直接引用通用 Skill**，而应只引用对应题材 Skill，由题材 Skill 继续路由到通用 Skill。
 - 因此，题材 Prompt 中不应直接写通用 Skill 名称列表、通用 Skill 路径，或通用 Skill 的 `references/` 文件路径。
+- 题材目录下 Prompt frontmatter 中声明的 `agent`，默认应视为指向**同题材目录** `.github/agents/` 中的 Agent 名称空间，不应默认改成去根 `.github/agents/` 或其他题材目录中解析。
+- 若编辑器、工具链或校验器对这类 `agent:` 声明报出“未知智能体”或类似告警，默认按局部解析受限处理并忽略；不要仅因为告警存在，就随意把现有 `agent:` 改名、改绑或删除。
 
 ### `.github/skills/`
 
@@ -91,6 +93,8 @@ name: "题材目录内部资产布局规范"
 - 该题材专属的审阅、创作、读者视角 Agent
 
 只有当 Agent 明显带有该题材语境、任务目标或风格职责时，才放在题材目录下。
+
+同时，这里的 Agent 也是该题材目录下 `.github/prompts/*.prompt.md` 中 `agent:` 字段的默认解析落点；维护 Prompt 时，应优先按“同题材 Prompt → 同题材 `.github/agents/`”的关系理解与维护。
 
 ### `.github/instructions/`
 
